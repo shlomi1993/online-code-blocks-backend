@@ -18,4 +18,4 @@ app.get('/', (req, res) => {
 
 // app.post('/detect', (req, res) => detect(req, res, sendJSON));
 
-app.listen(443, () => console.log('Anomaly Detection Server is up!'));
+app.listen(8080, '54.211.167.74', () => console.log('Anomaly Detection Server is up!'));
