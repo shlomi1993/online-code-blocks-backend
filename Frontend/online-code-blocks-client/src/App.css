@@ -1,0 +1,119 @@
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App {
+  height: 100vh;
+  background-color: #282c34;
+}
+
+.App-Logo {
+  margin-right: 15px;
+  margin-bottom: 5px;
+  height: 6vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: top;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  padding-top: 50px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.App-body {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: calc(10px + 2vmin);
+    color: white;
+    margin-top: 30px;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.Lobby-Guideline {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.Lobby-Loading {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Lobby-List {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  text-align: center;
+}
+
+.Lobby-Card {
+  margin: 20px 5px;
+}
+
+.Lobby-CardText {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.Lobby-CardButtons {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  margin-bottom: -12px;
+}
+
+.CodeBlock {
+  width: 800px;
+}
+
+.CodeBlock-h2 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.CodeBlock-Editor {
+  background-color:#1e1e1e;
+  border-color: #5f85d1;
+  border-width: 3px;
+  border-style: solid;
+  border-radius: 15px;
+  padding: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.CodeBlock-ID {
+  font-size: 12px;
+}
+
+
+
+
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
