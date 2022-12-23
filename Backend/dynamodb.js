@@ -1,5 +1,7 @@
 // Written by Shlomi Ben-Shushan.
 
+// This file contains implementation of API functions to communicate with the DynamoDB.
+
 const AWS = require('aws-sdk');
 const config = require('./config.json');
 const uuid = require('uuid');
@@ -9,11 +11,13 @@ AWS.config.update(config);
 const dbClient = new AWS.DynamoDB.DocumentClient();
 const table = 'CodeBlocks';
 
+// CORS settings object.
 const cors = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "*",
 };
 
+// This function retrieves a specific code-block from DynamoDB (by ID). 
 module.exports.getBlock = (res, id) => {
     let params = {
         TableName: table,
@@ -32,6 +36,7 @@ module.exports.getBlock = (res, id) => {
     });
 }
 
+// This function retrieves all the code-blocks from the DynamoDB.
 module.exports.getAllBlocks = (res) => {
   let params = {
     TableName: table,
@@ -47,6 +52,7 @@ module.exports.getAllBlocks = (res) => {
   });
 }
 
+// This function creates a new code-block in the DynamoDB by title.
 module.exports.putBlock = (res, title) => {
     let id = uuid.v1();
     let newBlock = {
@@ -69,6 +75,7 @@ module.exports.putBlock = (res, title) => {
     });
 }
 
+// This function modify the code of a code-block already exists in the DynamoDB.
 module.exports.updateBlock = (res, id, name, code) => {
     let params = {
         TableName: table,
@@ -91,6 +98,7 @@ module.exports.updateBlock = (res, id, name, code) => {
     });
 }
 
+// This function deletes a code-block from the DynamoDB.
 module.exports.deleteBlock = (res, id) => {
     let params = {
         TableName: table,

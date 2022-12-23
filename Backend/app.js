@@ -1,5 +1,7 @@
 // Written by Shlomi Ben-Shushan.
 
+// This file contains the implementation of the server-side application API.
+
 // Reference to DynamoDB API file.
 const dynamodb = require('./dynamodb');
 
@@ -73,16 +75,19 @@ app.put('/updateblock', (req, res) => {
   dynamodb.updateBlock(res, id, name, code);
 });
 
-// Handle DELETE requests -- requests to delete a specific code-block in the DynamoDB
+// Handle DELETE requests -- requests to delete a specific code-block in the DynamoDB.
 app.delete('/deleteblock', (req, res) => {
   const id = req.query.id;
   dynamodb.deleteBlock(res, id);
 });
 
+// This object helps to manage the different sockets and rooms.
 const rooms = {};
 
+// Using Socket.IO to share text-fields between multiple sockets.
 io.on('connection', (socket) => { 
   
+  // Listen and handle an event where a user entered a code-block (a socket joined a room).
   socket.on('join_room', (roomId) => {
     socket.join(roomId);
     if (roomId in rooms) {
@@ -92,10 +97,12 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Listen and handle an event where a user edited code-block.
   socket.on('send_message', (data) => {
     socket.to(data.roomId).emit('recieve_message', data.message)
   });
   
+  // Listen and handle an event where a user returned from a code-block (a socket left a room).
   socket.on('bye', (data) => {
     try {
       const i = rooms[data.roomId].indexOf(data.socketId);
@@ -105,4 +112,5 @@ io.on('connection', (socket) => {
   });
 });
 
+// Listen to new clients.
 server.listen(PORT, () => console.log(`Online-Code-Blocks backend server is available on port ${PORT}.`));
