@@ -1,16 +1,18 @@
 // Written by Shlomi Ben-Shushan.
 
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 
 import Lobby from "./pages/Lobby";
 import CodeBlock from "./pages/CodeBlock";
 import Error from "./pages/Error";
 
+// For credit.
 const linkedin = <a href='https://www.linkedin.com/in/shlomibs93/' className='App-link'>Linkedin</a>;
 const github = <a href='https://github.com/shlomi1993/' className='App-link'>Github</a>;
 
+// The app is divided to three visual parts - the header, the body and the footer.
 function App() {
   return (
     <div className="App">

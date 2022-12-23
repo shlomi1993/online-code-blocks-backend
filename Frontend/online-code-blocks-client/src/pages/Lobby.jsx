@@ -10,8 +10,11 @@ import '../App.css';
 
 const backendUri = require('../config.json').backend;
 
-console.log(backendUri)
-
+/**
+ * The Lobby componenet is shown when the user open the app.
+ * It creates a list of cards where Each card links to a list of code-blocks.
+ * It also allows the user to create new code-blocks.
+ */
 function Lobby() {
 
   const navigate = useNavigate();
@@ -20,6 +23,7 @@ function Lobby() {
   const [createButtonDisabled, setCreateButtonDisabled] = useState(true);
   const [newBlockName, setNewBlockName] = useState('');
 
+  // This function fetches a list of blocks from the DynamoDB.
   const fetchBlockList = async () => {
     let uri = backendUri + 'getAllCodeBlocks';
     fetch(uri)
@@ -31,6 +35,7 @@ function Lobby() {
     fetchBlockList();
   }, [])
 
+  // This function navigates the uesr to the code-block he chose.
   const navigateToCodeBlock = (codeblock) => {
     let state = {
       state: {
@@ -40,6 +45,7 @@ function Lobby() {
     navigate('./CodeBlock', state);
   }
 
+  // This function determine whether the create button is enabled or disabled. 
   const setCreateButton = (input) => {
     input = input.target.value;
     if (input.length === 0) {
@@ -56,6 +62,7 @@ function Lobby() {
     setNewBlockName(input);
   }
 
+  // This function requests to create a new code-block in the DynamoDB once the create button clicked.
   const createCodeBlock = () => {
     const options = {
       method: 'POST',
@@ -71,6 +78,7 @@ function Lobby() {
       });
   }
 
+  // This function requests to remove the given code-block from the DynamoDB once the small trash-icon clicked.
   const removeCodeBlock = (codeblock) => {
     const options = {
       method: 'DELETE',
@@ -81,6 +89,7 @@ function Lobby() {
       .then(data => window.location.reload());
   };
 
+  // This variable holds the lobby-list to be displayed once all data is fetched.
   const content = <div>
     <h2 className='Lobby-Header'>Select code block</h2>
     <div className="Lobby-List">
@@ -130,11 +139,13 @@ function Lobby() {
     
   </div>
 
+  // This variable holds a temporal contend to be displayed untill all data is fetched. 
   const loading = <div className='Lobby-Loading'>
       <img src={require('../assets/loading.gif')} className='Lobby-LoadingGIF'/>
       <h2>Loading...</h2>
     </div>;
 
+  // The function renders the content according to the size of the block-list.
   return (
     blockList.length === 0 ? loading : content
   );
