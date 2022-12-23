@@ -1,56 +1,69 @@
 // Written by Shlomi Ben-Shushan.
 
+// Reference to DynamoDB API file.
 const dynamodb = require('./dynamodb');
 
+// References to Express server and CORS settings.
 const cors = require('cors');
 const express = require('express');
 const app = express();
 
+// CORS settings object.
 const corsHeader = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "*",
 };
 
+// Create Socket.IO server combined with Express.
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, { cors: corsHeader });
 
-const PORT = 8080;
+// Load port from configuration file.
+const PORT = require('./config.json').port;
 
+// For encoding CRUD requests.
 app.use(
     express.urlencoded({
         extended: false,
     })
 );
 
+// Set CORS.
 app.use(cors())
 
+// Make express parse HTTP request's body as JSON.
 app.use(express.json()) 
 
+// Sanity check (ping --> pong).
 app.get('/ping', (req, res) => {
     res.send('PONG')
 });
 
+// Handle GET requests -- retrieve a specific code-block from the DynamoDB.
 app.get('/getblock', (req, res) => {
     let id = req.query.id;
     dynamodb.getBlock(res, id);
 });
 
+// Handle GET requests -- retrieve all code-blocks from the DynamoDB.
 app.get('/getAllCodeBlocks', (req, res) => {
     dynamodb.getAllBlocks(res);
 });
 
+// Handle GET requests -- return the ID of the mentor of a given room (by room-ID).
 app.get('/getMentor', (req, res) => {
   const roomId = req.query.blockId;
   const mentor = (roomId in rooms) ? rooms[roomId][0] : null;
   res.json({ mentorId: mentor });
 });
 
+// Handle POST requests -- requests the table in the DynamoDB to create a new code-block.
 app.post('/createblock', (req, res) => {
   const title = req.body.title;
   dynamodb.putBlock(res, title);
 });
 
-
+// Handle PUT requests -- requests to modify a code-block already stored in DynamoDB.
 app.put('/updateblock', (req, res) => {
   const id = req.query.id;
   const name = req.query.name;
@@ -60,6 +73,7 @@ app.put('/updateblock', (req, res) => {
   dynamodb.updateBlock(res, id, name, code);
 });
 
+// Handle DELETE requests -- requests to delete a specific code-block in the DynamoDB
 app.delete('/deleteblock', (req, res) => {
   const id = req.query.id;
   dynamodb.deleteBlock(res, id);
