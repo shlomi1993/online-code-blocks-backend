@@ -1,3 +1,5 @@
+// Written by Shlomi Ben-Shushan.
+
 const AWS = require('aws-sdk');
 const config = require('./config.json');
 const uuid = require('uuid');
@@ -47,13 +49,14 @@ module.exports.getAllBlocks = (res) => {
 
 module.exports.putBlock = (res, title) => {
     let id = uuid.v1();
+    let newBlock = {
+        block_id: id,
+        block_name: title,
+        code: ''
+    }
     let params = {
         TableName: table,
-        Item: {
-            block_id: id,
-            block_name: title,
-            code: ''
-        }
+        Item: newBlock
     };
     dbClient.put(params, (err, data) => {
         if (err) {
@@ -61,12 +64,12 @@ module.exports.putBlock = (res, title) => {
             res.json({ 'message': 'server side error.', statusCode: 500, error: err });
         } else {
             res.set(cors);
-            res.json({ 'message': 'success.', statusCode: 200, id: id });
+            res.json({ 'message': 'success.', statusCode: 200, block: newBlock });
         }
     });
 }
 
-module.exports.updateBlock = (res, id, code) => {
+module.exports.updateBlock = (res, id, name, code) => {
     let params = {
         TableName: table,
         Key: {
@@ -83,7 +86,7 @@ module.exports.updateBlock = (res, id, code) => {
             res.json({ 'message': 'server side error.', statusCode: 500, error: err });
         } else {
             res.set(cors);
-            res.json({ 'message': `block ${id} successfully updated.` , statusCode: 200 });
+            res.json({ 'message': `block "${name}" (id: ${id}) successfully updated.` , statusCode: 200 });
         }
     });
 }

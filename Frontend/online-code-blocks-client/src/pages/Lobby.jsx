@@ -1,7 +1,11 @@
+// Written by Shlomi Ben-Shushan.
+
 import React, { Component, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import io from 'socket.io-client';
-import { Box, Card, CardContent, Typography, Button } from '@mui/material';
+import { Box, Card, CardContent, Typography, Button, } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import TextField from '@mui/material/TextField';
 import '../App.css';
 
 const backendUri = 'http://localhost:8080/';
@@ -11,6 +15,8 @@ function Lobby() {
   const navigate = useNavigate();
 
   const [blockList, setBlockList] = useState([]);
+  const [createButtonDisabled, setCreateButtonDisabled] = useState(true);
+  const [newBlockName, setNewBlockName] = useState('');
 
   const fetchBlockList = async () => {
     let uri = backendUri + 'getAllCodeBlocks';
@@ -29,41 +35,101 @@ function Lobby() {
         codeblock: codeblock
       }
     }
-    // sendPing();
     navigate('./CodeBlock', state);
   }
 
-  const removeCodeBlock = (codeblock) => {
+  const setCreateButton = (input) => {
+    input = input.target.value;
+    if (input.length === 0) {
+      setCreateButtonDisabled(true);
+      return;
+    }
+    for (let i = 0; i < blockList.length; i++) {
+      if (blockList[i].block_name === input) {
+        setCreateButtonDisabled(true);
+        return;
+      }
+    }
+    setCreateButtonDisabled(false);
+    setNewBlockName(input);
+  }
 
+  const createCodeBlock = () => {
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: newBlockName })
+    };
+    fetch(backendUri + 'createblock', options)
+      .then(response => response.json())
+      .then(data => {
+        setNewBlockName('');
+        document.getElementById('textField').value = '';
+        blockList.push(data.block);
+      });
+  }
+
+  const removeCodeBlock = (codeblock) => {
+    const options = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+    };
+    fetch(backendUri + 'deleteblock?id=' + codeblock.block_id, options)
+      .then(response => response.json())
+      .then(data => window.location.reload());
   };
 
   const content = <div>
-    <h2 className='Lobby-Guideline'>Select code block</h2>
+    <h2 className='Lobby-Header'>Select code block</h2>
     <div className="Lobby-List">
       {blockList.map((cb) => {
         return (
-          <Box width='350px' className='Lobby-Card'>
-              <Card>
-                  <CardContent>
-                      <div className='Lobby-CardText'>
-                        <Typography gutterBottom variant='h5' component='div'>
-                            {cb.block_name}
-                        </Typography>
-                      </div>
-                      <div className='Lobby-CardButtons'>
-                        <Button variant='text' onClick={() => navigateToCodeBlock(cb)}>Join</Button>
-                        <Button variant='text' onClick={() => removeCodeBlock(cb)}>Remove</Button>
-                      </div>
-                  </CardContent>
-              </Card>
+          <Box width='380px' className='Lobby-Card'>
+            <Card>
+              <CardContent>
+                <div className='Lobby-CardContent'>
+                  <div className='Lobby-RemoveButton'>
+                    <IconButton aria-label="delete" size="small" onClick={() => removeCodeBlock(cb)}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </div>
+                  <div className='Lobby-CardText'>
+                    <Typography  gutterBottom variant='h5' component='div'>
+                        {cb.block_name}
+                    </Typography>
+                  </div>
+                  <div className='Lobby-JoinButton'>
+                    <Button variant='text' onClick={() => navigateToCodeBlock(cb)}>Join</Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </Box>    
         );
       })}
+      <Box width='380px' className='Lobby-Card'>
+        <Card>
+          <CardContent>
+            <div className='Lobby-CardContent'>
+              <div className='Lobby-CreateCardText'>
+                <Typography gutterBottom variant='h5' component='div'>
+                  ➕ New Code Block
+                </Typography>
+              </div>
+              <div className='Lobby-Create'>
+                <TextField id="textField" label="Block Title" variant="outlined" onChange={(x) => setCreateButton(x)}/>
+                <Button variant='text' onClick={() => createCodeBlock()} disabled={createButtonDisabled}>Create</Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </Box>  
     </div>
+    
   </div>
 
-  const loading = <div>
-      <img src={require('../assets/loading.gif')} className='Lobby-Loading'/>
+  const loading = <div className='Lobby-Loading'>
+      <img src={require('../assets/loading.gif')} className='Lobby-LoadingGIF'/>
       <h2>Loading...</h2>
     </div>;
 
