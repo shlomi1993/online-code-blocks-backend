@@ -8,7 +8,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TextField from '@mui/material/TextField';
 import '../App.css';
 
-const backendUri = 'http://localhost:8080/';
+const backendUri = require('../config.json').backend;
+
+console.log(backendUri)
 
 function Lobby() {
 

@@ -11,7 +11,7 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css';
 import '../App.css'
 
-const backendUri = 'http://localhost:8080/';
+const backendUri = require('../config.json').backend;
 const socket = io.connect(backendUri);
 
 function CodeBlock() {
