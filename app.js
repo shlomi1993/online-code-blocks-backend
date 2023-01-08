@@ -21,7 +21,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server, { cors: corsHeader });
 
 // Load port from configuration file.
-const PORT = require('./config.json').port;
+const PORT = require('./config.json').backend.port;
 
 // For encoding CRUD requests.
 app.use(
