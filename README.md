@@ -1,6 +1,6 @@
 # Online Code Blocks - Backend
 
-Welcome to the backend of the **Online Code Blocks** system — a collaborative real-time code editing platform.
+Welcome to the backend of the **Online Code Blocks** app - a collaborative real-time code editing platform.
 This backend application is built with **Node.js**, **Express**, **Socket.IO**, and **AWS DynamoDB** to support creation, editing, deletion, and real-time synchronization of code blocks.
 
 ---
